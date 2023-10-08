@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.XboxController;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -19,6 +20,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+  private final XboxController m_driverController = new XboxController(0);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -84,6 +86,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     SmartDashboard.putNumber("TeleOp", 1);
+    SmartDashboard.putNumber("left X", m_driverController.getLeftY());
+    SmartDashboard.putNumber("left Y", m_driverController.getLeftX());
   }
 
   @Override
