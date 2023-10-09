@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
-
+import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -21,6 +21,8 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   private final XboxController m_driverController = new XboxController(0);
+  VictorSP victor0 = new VictorSP(0); // 0 is the RIO PWM port this is connected to
+  VictorSP victor1 = new VictorSP(1); // 0 is the RIO PWM port this is connected to
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -80,6 +82,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    
   }
 
   /** This function is called periodically during operator control. */
@@ -88,6 +91,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("TeleOp", 1);
     SmartDashboard.putNumber("left X", m_driverController.getLeftY());
     SmartDashboard.putNumber("left Y", m_driverController.getLeftX());
+
+    double speedMultiplier = 1;
+
+    victor0.set(speedMultiplier * m_driverController.getLeftY()); // the % output of the motor, between -1 and 1
+    victor1.set(speedMultiplier * m_driverController.getLeftX()); // the % output of the motor, between -1 and 1
   }
 
   @Override
