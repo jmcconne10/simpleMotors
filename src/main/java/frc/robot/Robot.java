@@ -22,8 +22,8 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   private final XboxController m_driverController = new XboxController(0);
   VictorSP victor0 = new VictorSP(0); // 0 is the RIO PWM port this is connected to
-  VictorSP victor1 = new VictorSP(1); // 0 is the RIO PWM port this is connected to
-
+  private final double speedMultiplier = 0.50; // this limits the speed for the motors
+  private double deadband = 0.1; // Adjust this value to set the deadband size
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -88,14 +88,19 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    SmartDashboard.putNumber("TeleOp", 1);
-    SmartDashboard.putNumber("left X", m_driverController.getLeftY());
-    SmartDashboard.putNumber("left Y", m_driverController.getLeftX());
+    SmartDashboard.putNumber("Version", 3);
+    SmartDashboard.putNumber("left Y", m_driverController.getLeftY());
+    SmartDashboard.putNumber("left X", m_driverController.getLeftX());
 
-    double speedMultiplier = 1;
+    double ySpeed = -m_driverController.getLeftY();
 
-    victor0.set(speedMultiplier * m_driverController.getLeftY()); // the % output of the motor, between -1 and 1
-    victor1.set(speedMultiplier * m_driverController.getLeftX()); // the % output of the motor, between -1 and 1
+    if (Math.abs(ySpeed) < deadband) {
+      ySpeed = 0;
+    } else {
+      ySpeed = ySpeed * speedMultiplier;
+    }
+
+    victor0.set(speedMultiplier * ySpeed); // the % output of the motor, between -1 and 1
   }
 
   @Override
